@@ -1,0 +1,116 @@
+@startuml
+
+entity Pengguna <<E, #FF7700>> {
+  +idPengguna: int
+  username: varchar
+  password: varchar
+  namaPengguna: varchar
+  +idRole: int
+  status: varchar
+  foto: varchar
+}
+
+entity AktivitasPengguna <<E, #FF7700>> {
+  +idAktivitas: int
+  tanggal: date
+  waktu: time
+  +idPengguna: int
+  aktivitas: varchar
+}
+
+entity Role <<E, #FF7700>> {
+  +idRole: int
+  role: varchar
+  status: varchar
+}
+
+entity Warung <<E, #FF7700>> {
+  +idWarung: int
+  namaWarung: varchar
+  logo: varchar
+  gambar: varchar
+}
+
+entity Meja <<E, #FF7700>> {
+  +idMeja: int
+  +idWarung: int
+  kodeMeja: varchar
+}
+
+entity Menu <<E, #FF7700>> {
+  +idMenu: int
+  namaMenu: varchar
+  kategori: varchar
+  harga: decimal
+  gambar: varchar
+  +idWarung: int
+}
+
+entity Transaksi <<E, #FF7700>> {
+  +idTransaksi: int
+  tanggal: date
+  waktu: time
+  shift: int
+  +idPengguna: int
+  +idPelanggan: int (nullable)
+  status: varchar
+  kodeMeja: varchar
+  namaPelanggan: varchar
+  total: decimal
+  metodePembayaran: varchar
+  totalDiskon: decimal
+  +idPromosi: int (nullable)
+}
+
+entity DetailTransaksi <<E, #FF7700>> {
+  +idTransaksi: int
+  +idMenu: int
+  namaMenu: varchar
+  harga: decimal
+  jumlah: int
+  subtotal: decimal
+  status: varchar
+}
+
+entity Pelanggan <<E, #FF7700>> {
+  +idPelanggan: int
+  namaPelanggan: varchar
+  tanggalDaftar: date
+  waktuDaftar: time
+  poin: int
+  status: varchar
+}
+
+entity PoinTransaksi <<E, #FF7700>> {
+  +idPoinTransaksi: int
+  tanggal: date
+  waktu: time
+  +idPelanggan: int
+  jumlahPoin: int
+  status: varchar
+  poinAwal: int
+  poinAkhir: int
+  sumber: varchar
+  +idTransaksi: int
+}
+
+entity Promosi <<E, #FF7700>> {
+  +idPromosi: int
+  namaPromosi: varchar
+  deskripsi: varchar
+  jumlahPoin: int
+  gambar: varchar
+}
+
+Pengguna ||--o{ Role
+AktivitasPengguna ||--o{ Pengguna
+Meja }o--|| Warung
+Menu }o--|| Warung
+DetailTransaksi }--|| Transaksi
+Transaksi ||--o{ Pengguna
+Transaksi ||--o{ Pelanggan
+PoinTransaksi }--|| Pelanggan
+PoinTransaksi }--|| Transaksi
+Transaksi ||--o{ Promosi
+
+@enduml
