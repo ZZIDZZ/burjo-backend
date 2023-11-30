@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 return new class extends Migration
 {
     /**
@@ -32,8 +33,8 @@ return new class extends Migration
                 'namapengguna' => 'Pemilik',
                 'idrole' => 1,
                 'status' => 'aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'username' => 'petugas_kasir',
@@ -41,8 +42,8 @@ return new class extends Migration
                 'namapengguna' => 'Petugas Kasir',
                 'idrole' => 2,
                 'status' => 'aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'username' => 'petugas_pengantar_pesanan',
@@ -50,8 +51,8 @@ return new class extends Migration
                 'namapengguna' => 'Petugas Pengantar Pesanan',
                 'idrole' => 3,
                 'status' => 'aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'username' => 'petugas_dapur',
@@ -59,8 +60,8 @@ return new class extends Migration
                 'namapengguna' => 'Petugas Dapur',
                 'idrole' => 4,
                 'status' => 'aktif',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }

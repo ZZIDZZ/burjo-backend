@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 
 return new class extends Migration
@@ -27,26 +28,26 @@ return new class extends Migration
             [
                 'role' => 'pemilik',
                 'description' => 'Pemilik',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'role' => 'petugas_kasir',
                 'description' => 'Petugas Kasir',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'role' => 'petugas_pengantar_pesanan',
                 'description' => 'Petugas Pengantar Pesanan',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'role' => 'petugas_dapur',
                 'description' => 'Petugas Dapur',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }
