@@ -33,11 +33,14 @@ class AuthController extends Controller
     {
         $credentials = $request->only('username', 'password');
         $pengguna = Pengguna::select("pengguna.*", "roles.role", "roles.description as role_description")->leftjoin('roles', 'roles.id', 'pengguna.idrole')->where("username", $credentials["username"])->first();
-        //empty password
-        $pengguna->password = "";
 
         if (empty($pengguna))
             return response()->json(["message" => __("message.userNotFound", ['username' => $credentials["username"]])], 422);
+        
+        //empty password
+        $pengguna->password = "";
+
+        
         
 
         
