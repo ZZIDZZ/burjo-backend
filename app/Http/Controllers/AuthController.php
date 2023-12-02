@@ -8,8 +8,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Exceptions\CoreException;
+use App\Models\AktivitasPengguna;
 use App\Models\Pengguna;
-
+use Illuminate\Support\Carbon;
 class AuthController extends Controller
 {
     /**
@@ -36,7 +37,7 @@ class AuthController extends Controller
 
         if (empty($pengguna))
             return response()->json(["message" => __("message.userNotFound", ['username' => $credentials["username"]])], 422);
-        
+
         //empty password
         $pengguna->password = "";
 
@@ -49,6 +50,15 @@ class AuthController extends Controller
             // return error with 401
             return response()->json(["message" => __("message.loginCredentialFalse")], 401);
         }
+
+        // if success, insert to aktivitas_pengguna
+        $aktivitas_pengguna = new AktivitasPengguna();
+        $aktivitas_pengguna->idpengguna = $pengguna->id;
+        $aktivitas_pengguna->aktivitas = "Login";
+        $now = Carbon::now();
+        $aktivitas_pengguna->tanggal = $now->format("Y-m-d");
+        $aktivitas_pengguna->waktu = $now->format("H:i:s");
+        $aktivitas_pengguna->save();
 
         // if mahasiswa, check if already pkl or skripsi
         

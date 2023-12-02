@@ -103,6 +103,7 @@ entity Promosi <<E, #FF7700>> {
 }
 
 Pengguna ||--o{ Role
+Warung ||--o{ Pengguna
 AktivitasPengguna ||--o{ Pengguna
 Meja }o--|| Warung
 Menu }o--|| Warung

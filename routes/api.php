@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UploadController;
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,12 @@ use App\Http\Controllers\UploadController;
 Route::post("/login", [AuthController::class, 'login']);
 Route::get("/logout", [AuthController::class, 'logout']);
 
+Route::group([
+    'middleware' => ['auth.rest'],
+    'prefix' => 'transaksi'
+], function () {
+    Route::get('list', [TransaksiController::class, 'list']);
+});
 
 // crud routes
 Route::group([
@@ -28,6 +35,7 @@ Route::group([
     Route::get('/me', [AuthController::class, 'me']);
     // crud routes
     Route::post('upload', [UploadController::class, 'upload'])->name("upload")->middleware('auth.rest');
+
 });
 
 
