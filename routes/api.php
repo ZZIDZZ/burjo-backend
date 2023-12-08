@@ -23,6 +23,7 @@ Route::group([
     'prefix' => 'transaksi'
 ], function () {
     Route::get('list', [TransaksiController::class, 'list']);
+    Route::get('detail/{id}', [TransaksiController::class, 'detail']);
 });
 
 // crud routes
