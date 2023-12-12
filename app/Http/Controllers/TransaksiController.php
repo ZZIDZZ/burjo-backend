@@ -21,7 +21,7 @@ class TransaksiController extends Controller
         $this->middleware('setguard:api');
     }
 
-    public function list(){
+    public function list(Request $request){
         // filter by role, if role = 1 (pemilik) then show all status transaksi,
         // if role = 2 (petugas kasir) then show all
         // if role = 3 (petugas pengantar pesanan) then show all
@@ -32,6 +32,15 @@ class TransaksiController extends Controller
         if($role == 4){
             $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses')";
         }
+        $shift = null;
+        if($request->has("shift")){
+            $shift = $request->shift;
+        }
+        $whereShift = "";
+        if($shift){
+            $whereShift = " AND transaksi.shift = '$shift'";
+        }
+        
 
         $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
@@ -41,12 +50,13 @@ class TransaksiController extends Controller
         LEFT JOIN warung ON warung.id = meja.idwarung
         LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
         ORDER BY transaksi.id DESC $whereStatusRole
+        WHERE TRUE $whereShift
         ");
 
         return response()->json(["data" => $transaksi]);
     }
 
-    public function history(){
+    public function history(Request $request){
         // histori kasir waiter
         // - selesai doang
         // histori koki
@@ -62,6 +72,26 @@ class TransaksiController extends Controller
         }else if($role == 4){
             $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
         }
+        $shift = null;
+        if($request->has("shift")){
+            $shift = $request->shift;
+        }
+        $whereShift = "";
+        if($shift){
+            $whereShift = " AND transaksi.shift = '$shift'";
+        }
+        
+
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        FROM transaksi
+        LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
+        LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
+        LEFT JOIN meja ON meja.id = transaksi.idmeja
+        LEFT JOIN warung ON warung.id = meja.idwarung
+        LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
+        ORDER BY transaksi.id DESC $whereStatusRole
+        WHERE TRUE $whereShift
+        ");
 
         $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
