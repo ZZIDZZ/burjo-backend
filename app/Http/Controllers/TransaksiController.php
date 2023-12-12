@@ -57,7 +57,7 @@ class TransaksiController extends Controller
             $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses', 'disajikan')";
         }
 
-        $transaksi = DB::query("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
         LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
         LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
