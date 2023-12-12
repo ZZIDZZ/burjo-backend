@@ -23,16 +23,64 @@ class TransaksiController extends Controller
 
     public function list(){
         // list transaksi
-        $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "pelanggan.namapelanggan", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
-        ->leftjoin("pengguna", "pengguna.id", "transaksi.idpengguna")
-        ->leftjoin("pelanggan", "pelanggan.id", "transaksi.idpelanggan")
-        ->leftjoin("meja", "meja.id", "transaksi.idmeja")
-        ->leftjoin("warung", "warung.id", "meja.idwarung")
-        ->leftjoin("promosi", "promosi.id", "transaksi.idpromosi")
-        ->orderBy("transaksi.id", "desc")
-        ->get();
+        // $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "pelanggan.namapelanggan", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
+        // ->leftjoin("pengguna", "pengguna.id", "transaksi.idpengguna")
+        // ->leftjoin("pelanggan", "pelanggan.id", "transaksi.idpelanggan")
+        // ->leftjoin("meja", "meja.id", "transaksi.idmeja")
+        // ->leftjoin("warung", "warung.id", "meja.idwarung")
+        // ->leftjoin("promosi", "promosi.id", "transaksi.idpromosi")
+        // ->orderBy("transaksi.id", "desc")
+        // ->get();
+
+        // in postgresql query:
+        // SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna 
+        // FROM transaksi
+        // LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
+        // LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
+        // LEFT JOIN meja ON meja.id = transaksi.idmeja
+        // LEFT JOIN warung ON warung.id = meja.idwarung
+        // LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
+        // ORDER BY transaksi.id DESC
+
+        // filter by role, if role = 1 (pemilik) then show all status transaksi,
+        // if role = 2 (petugas kasir) then show only baru, disajikan, selesai
+        // if role = 3 (petugas pengantar pesanan) then show only disajikan, selesai
+        // if role = 4 (petugas dapur) then show only baru, diproses, disajikan
+
+        $role = auth()->user()->role;
+        $whereStatusRole = "";
+        if($role == 2){
+            $whereStatusRole = " AND transaksi.status IN ('baru', 'disajikan', 'selesai')";
+        }else if($role == 3){
+            $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
+        }else if($role == 4){
+            $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses', 'disajikan')";
+        }
+
+        $transaksi = DB::query("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        FROM transaksi
+        LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
+        LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
+        LEFT JOIN meja ON meja.id = transaksi.idmeja
+        LEFT JOIN warung ON warung.id = meja.idwarung
+        LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
+        ORDER BY transaksi.id DESC $whereStatusRole
+        ");
 
         return response()->json(["data" => $transaksi]);
+    }
+
+    public function updateStatusTransaksi($id){
+        $statuses = ["baru", "diproses", "disajikan", "selesai"];
+        $transaksi = Transaksi::find($id);
+        if(!$transaksi){
+            throw new CoreException("Transaksi tidak ditemukan");
+        }
+        if($transaksi->status != "selesai"){
+            $index = array_search($transaksi->status, $statuses);
+            $transaksi->status = $statuses[$index + 1];
+        }
+        $transaksi->save();
     }
 
     public function detail($id){

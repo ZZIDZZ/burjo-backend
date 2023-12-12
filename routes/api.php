@@ -25,6 +25,7 @@ Route::group([
     Route::get('list', [TransaksiController::class, 'list']);
     Route::get('detail/{id}', [TransaksiController::class, 'detail']);
     Route::post('create', [TransaksiController::class, 'create']);
+    Route::get('update-status-transaksi/{id}', [TransaksiController::class, 'updateStatusTransaksi']);
 });
 
 // crud routes
