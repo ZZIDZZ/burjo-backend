@@ -49,8 +49,8 @@ class TransaksiController extends Controller
         LEFT JOIN meja ON meja.id = transaksi.idmeja
         LEFT JOIN warung ON warung.id = meja.idwarung
         LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
-        ORDER BY transaksi.id DESC $whereStatusRole
         WHERE TRUE $whereShift
+        ORDER BY transaksi.id DESC $whereStatusRole
         ");
 
         return response()->json(["data" => $transaksi]);
@@ -89,8 +89,8 @@ class TransaksiController extends Controller
         LEFT JOIN meja ON meja.id = transaksi.idmeja
         LEFT JOIN warung ON warung.id = meja.idwarung
         LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
-        ORDER BY transaksi.id DESC $whereStatusRole
         WHERE TRUE $whereShift
+        ORDER BY transaksi.id DESC $whereStatusRole
         ");
 
         $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
