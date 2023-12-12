@@ -81,6 +81,8 @@ class TransaksiController extends Controller
             $transaksi->status = $statuses[$index + 1];
         }
         $transaksi->save();
+
+        return response()->json(["data" => $transaksi]);
     }
 
     public function detail($id){
