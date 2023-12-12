@@ -41,6 +41,10 @@ class AuthController extends Controller
         //empty password
         $pengguna->password = "";
 
+        $warung = DB::table("warung")->where("id", $pengguna->idwarung)->first();
+        $namawarung = $warung->namawarung;
+        $pengguna->namawarung = $namawarung;
+
         
         
 
@@ -87,6 +91,7 @@ class AuthController extends Controller
         $pengguna->name = $input["name"];
         $pengguna->password = bcrypt($input["password"]);
         $pengguna->save();
+        
 
         if ($token = Auth::attempt($input)) {
             return $this->respondWithToken($token);
@@ -107,6 +112,10 @@ class AuthController extends Controller
         
         // empty password
         $pengguna->password = "";
+
+        $warung = DB::table("warung")->where("id", $pengguna->idwarung)->first();
+        $namawarung = $warung->namawarung;
+        $pengguna->namawarung = $namawarung;
 
         return response()->json([
             "data" => $pengguna->toArray()

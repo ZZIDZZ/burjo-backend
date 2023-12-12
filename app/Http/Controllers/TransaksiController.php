@@ -59,6 +59,53 @@ class TransaksiController extends Controller
             "data" => $transaksi->first(), 
             "detail_transaksi" => $detail
         ]);
+    }
 
+    public function create(Request $request){
+        $input = $request->all();
+        // check meja exist in database based on kodemeja
+        $idwarung = auth()->user()->idwarung;
+        $kode_meja = $input["kodemeja"];
+        $meja = DB::table("meja")->where("kodemeja", $kode_meja)->where("idwarung", $idwarung)->first();
+        if(!$meja){
+            throw new CoreException("Meja $kode_meja tidak ditemukan pada warung ini");
+        }
+        $idmeja = $meja->id;
+        $inputNewTransaksi = [
+            "idmeja" => $idmeja,
+            "idpengguna" => auth()->user()->id,
+            "tanggal" => Carbon::now(),
+            "waktu" => Carbon::now(),
+            "shift" => $input["shift"],
+            "namapelanggan" => $input["namapelanggan"],
+            "metodepembayaran" => $input["metodepembayaran"],
+            "status" => "baru",
+            "created_at" => Carbon::now(),
+            "updated_at" => Carbon::now(),
+        ];
+        $newTransaksi = new Transaksi();
+        $newTransaksi->fill($inputNewTransaksi);
+        $newTransaksi->save();
+
+        $detail_transaksi = $input["detail_transaksi"];
+        $jumlahtransaksi = 0;
+        foreach($detail_transaksi as $detail){
+            $menu = DB::table("menu")->where("id", $detail["idmenu"])->first();
+            $inputNewDetailTransaksi = [
+                "idtransaksi" => $newTransaksi->id,
+                "idmenu" => $detail["idmenu"],
+                "jumlah" => $detail["jumlah"],
+                "harga" => $menu->harga,
+                "subtotal" => $menu->harga * $detail["jumlah"],
+                "status" => "baru",
+                "namamenu" => $menu->namamenu,
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now()
+            ];
+            $jumlahtransaksi += $menu->harga * $detail["jumlah"];
+            $newDetailTransaksi = new DetailTransaksi();
+            $newDetailTransaksi->fill($inputNewDetailTransaksi);
+            $newDetailTransaksi->save();
+        }
     }
 }

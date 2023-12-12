@@ -24,6 +24,7 @@ Route::group([
 ], function () {
     Route::get('list', [TransaksiController::class, 'list']);
     Route::get('detail/{id}', [TransaksiController::class, 'detail']);
+    Route::post('create', [TransaksiController::class, 'create']);
 });
 
 // crud routes
