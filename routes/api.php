@@ -24,7 +24,9 @@ Route::group([
     'prefix' => 'transaksi'
 ], function () {
     Route::get('list', [TransaksiController::class, 'list']);
+    Route::get('history', [TransaksiController::class, 'history']);
     Route::get('detail/{id}', [TransaksiController::class, 'detail']);
+    Route::get('update-status-transaksi/{id}', [TransaksiController::class, 'updateStatusTransaksi']);
     Route::post('create', [TransaksiController::class, 'create']);
 });
 
