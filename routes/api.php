@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MenuController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -25,6 +26,13 @@ Route::group([
     Route::get('list', [TransaksiController::class, 'list']);
     Route::get('detail/{id}', [TransaksiController::class, 'detail']);
     Route::post('create', [TransaksiController::class, 'create']);
+});
+
+Route::group([
+    'middleware' => ['auth.rest'],
+    'prefix' => 'menu'
+], function () {
+    Route::get('list', [MenuController::class, 'list']);
 });
 
 // crud routes

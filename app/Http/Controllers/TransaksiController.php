@@ -62,7 +62,7 @@ class TransaksiController extends Controller
     }
 
     public function create(Request $request){
-        $input = $request->all();
+        $input = $request->all();   
         // check meja exist in database based on kodemeja
         $idwarung = auth()->user()->idwarung;
         $kode_meja = $input["kodemeja"];
@@ -85,10 +85,13 @@ class TransaksiController extends Controller
         ];
         $newTransaksi = new Transaksi();
         $newTransaksi->fill($inputNewTransaksi);
-        $newTransaksi->save();
+        if(!$newTransaksi->save()){
+            return response()->json(["message" => "Gagal menyimpan transaksi"], 422);
+        }
 
         $detail_transaksi = $input["detail_transaksi"];
         $jumlahtransaksi = 0;
+        $detailReturn = [];
         foreach($detail_transaksi as $detail){
             $menu = DB::table("menu")->where("id", $detail["idmenu"])->first();
             $inputNewDetailTransaksi = [
@@ -106,6 +109,16 @@ class TransaksiController extends Controller
             $newDetailTransaksi = new DetailTransaksi();
             $newDetailTransaksi->fill($inputNewDetailTransaksi);
             $newDetailTransaksi->save();
+            $detailReturn[] = $newDetailTransaksi->toArray();
         }
+
+        $newTransaksi->total = $jumlahtransaksi;
+        $newTransaksi->save();
+
+        return response()->json([
+            "message" => "Berhasil membuat transaksi baru", 
+            "transaksi" => $newTransaksi->toArray(),
+            "detail_transaksi" => $detailReturn
+        ]);
     }
 }
