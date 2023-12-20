@@ -236,7 +236,7 @@ class TransaksiController extends Controller
         WHERE t.tanggal=? AND t.shift=? AND w.id=?
         GROUP BY me.id, me.namamenu
         ORDER BY total_masakan_dibuat DESC
-        LIMIT 5", $params);
+        LIMIT 3", $params);
 
         $rekap->masakan_terlaris = $masakanTerlaris;
 
