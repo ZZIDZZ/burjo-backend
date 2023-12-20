@@ -28,6 +28,7 @@ Route::group([
     Route::get('detail/{id}', [TransaksiController::class, 'detail']);
     Route::get('update-status-transaksi/{id}', [TransaksiController::class, 'updateStatusTransaksi']);
     Route::post('create', [TransaksiController::class, 'create']);
+    Route::get('rekap-shift', [TransaksiController::class, 'rekapShift']);
 });
 
 Route::group([

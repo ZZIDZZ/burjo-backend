@@ -219,4 +219,30 @@ class TransaksiController extends Controller
             "detail_transaksi" => $detailReturn
         ]);
     }
+
+    public function rekapShift(Request $request){
+        $today = Carbon::now()->format("Y-m-d");
+        $shift = $request->shift ?? 1;
+        $idwarung = auth()->user()->idwarung;
+
+        $params = [$today, $shift, $idwarung];
+
+        $rekap = DB::select("SELECT SUM(dt.subtotal) AS total_penjualan, COUNT(t.id) AS total_transaksi, SUM(dt.jumlah) AS total_masakan_dibuat
+        FROM detail_transaksi dt LEFT JOIN transaksi t ON dt.idtransaksi = t.id  LEFT JOIN meja m ON t.idmeja = m.id LEFT JOIN warung w ON m.idwarung = w.id
+        WHERE t.tanggal=? AND t.shift=? AND w.id=?", $params)[0];
+
+        $masakanTerlaris = DB::select("SELECT me.id, SUM(dt.jumlah) AS total_masakan_dibuat, me.namamenu
+        FROM detail_transaksi dt LEFT JOIN transaksi t ON dt.idtransaksi = t.id  LEFT JOIN meja m ON t.idmeja = m.id LEFT JOIN warung w ON m.idwarung = w.id LEFT JOIN menu me ON dt.idmenu = me.id
+        WHERE t.tanggal=? AND t.shift=? AND w.id=?
+        GROUP BY me.id, me.namamenu
+        ORDER BY total_masakan_dibuat DESC
+        LIMIT 5", $params);
+
+        $rekap->masakan_terlaris = $masakanTerlaris;
+
+
+        return response()->json(
+            ["data" => $rekap]
+        );
+    }
 }
