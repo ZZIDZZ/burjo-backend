@@ -42,7 +42,7 @@ class TransaksiController extends Controller
         }
         
 
-        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
         LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
         LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
@@ -82,7 +82,7 @@ class TransaksiController extends Controller
         }
         
 
-        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
         LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
         LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
@@ -123,7 +123,7 @@ class TransaksiController extends Controller
 
     public function detail($id){
         // find transaksi by id
-        $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "pelanggan.namapelanggan", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
+        $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
         ->leftjoin("pengguna", "pengguna.id", "transaksi.idpengguna")
         ->leftjoin("pelanggan", "pelanggan.id", "transaksi.idpelanggan")
         ->leftjoin("meja", "meja.id", "transaksi.idmeja")
