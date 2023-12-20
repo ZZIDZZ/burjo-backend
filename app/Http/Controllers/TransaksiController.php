@@ -123,15 +123,27 @@ class TransaksiController extends Controller
 
     public function detail($id){
         // find transaksi by id
-        $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
-        ->leftjoin("pengguna", "pengguna.id", "transaksi.idpengguna")
-        ->leftjoin("pelanggan", "pelanggan.id", "transaksi.idpelanggan")
-        ->leftjoin("meja", "meja.id", "transaksi.idmeja")
-        ->leftjoin("warung", "warung.id", "meja.idwarung")
-        ->leftjoin("promosi", "promosi.id", "transaksi.idpromosi")
-        ->where("transaksi.id", $id);
+        // $transaksi = Transaksi::select("transaksi.*", "pengguna.namapengguna", "pengguna.username as username_pengguna", "COALESCE(transaksi.namapelanggan, pelanggan.namapelanggan)", "meja.kodemeja", "warung.namawarung", "warung.kodewarung", "promosi.namapromosi", "pengguna.kodepengguna")
+        // ->leftjoin("pengguna", "pengguna.id", "transaksi.idpengguna")
+        // ->leftjoin("pelanggan", "pelanggan.id", "transaksi.idpelanggan")
+        // ->leftjoin("meja", "meja.id", "transaksi.idmeja")
+        // ->leftjoin("warung", "warung.id", "meja.idwarung")
+        // ->leftjoin("promosi", "promosi.id", "transaksi.idpromosi")
+        // ->where("transaksi.id", $id);
 
-        if($transaksi->count() == 0){
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        FROM transaksi
+        LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
+        LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
+        LEFT JOIN meja ON meja.id = transaksi.idmeja
+        LEFT JOIN warung ON warung.id = meja.idwarung
+        LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
+        WHERE transaksi.id = ?
+        ", [$id]);
+
+        
+
+        if(count($transaksi) == 0){
             throw new CoreException("Transaksi tidak ditemukan");
         }
 
@@ -142,7 +154,7 @@ class TransaksiController extends Controller
         ->get();
 
         return response()->json([
-            "data" => $transaksi->first(), 
+            "data" => $transaksi[0], 
             "detail_transaksi" => $detail
         ]);
     }
