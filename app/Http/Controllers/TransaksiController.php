@@ -154,7 +154,7 @@ class TransaksiController extends Controller
         $kode_meja = $input["kodemeja"];
         $meja = DB::table("meja")->where("kodemeja", $kode_meja)->where("idwarung", $idwarung)->first();
         if(!$meja){
-            throw new CoreException("Meja $kode_meja tidak ditemukan pada warung ini");
+            return response()->json(["message" => "Meja $kode_meja tidak ditemukan pada warung ini"], 422);
         }
         $idmeja = $meja->id;
         $inputNewTransaksi = [
