@@ -24,7 +24,7 @@ class TransaksiController extends Controller
     public function list(Request $request){
         // filter by role, if role = 1 (pemilik) then show all status transaksi,
 
-        $role = auth()->user()->role;
+        $role = auth()->user()->idrole;
         $whereStatusRole = "";
         if($role == 4){
             // if role = 4 (petugas dapur) then show only baru, diproses
@@ -53,8 +53,8 @@ class TransaksiController extends Controller
         LEFT JOIN meja ON meja.id = transaksi.idmeja
         LEFT JOIN warung ON warung.id = meja.idwarung
         LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
-        WHERE TRUE $whereShift
-        ORDER BY transaksi.id DESC $whereStatusRole
+        WHERE TRUE $whereShift $whereStatusRole
+        ORDER BY transaksi.id DESC 
         ");
 
         return response()->json(["data" => $transaksi]);
@@ -67,7 +67,7 @@ class TransaksiController extends Controller
         // - siap disajikan
         // - selesai
 
-        $role = auth()->user()->role;
+        $role = auth()->user()->idrole;
         $whereStatusRole = "";
         // if($role == 2){
         //     $whereStatusRole = " AND transaksi.status IN ('selesai')";
@@ -86,7 +86,18 @@ class TransaksiController extends Controller
         }
         
 
-        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        // $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan) AS namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
+        // FROM transaksi
+        // LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
+        // LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
+        // LEFT JOIN meja ON meja.id = transaksi.idmeja
+        // LEFT JOIN warung ON warung.id = meja.idwarung
+        // LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
+        // WHERE TRUE $whereShift
+        // ORDER BY transaksi.id DESC $whereStatusRole
+        // ");
+
+        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, COALESCE(pelanggan.namapelanggan, transaksi.namapelanggan), meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
         FROM transaksi
         LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
         LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
@@ -94,17 +105,7 @@ class TransaksiController extends Controller
         LEFT JOIN warung ON warung.id = meja.idwarung
         LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
         WHERE TRUE $whereShift
-        ORDER BY transaksi.id DESC $whereStatusRole
-        ");
-
-        $transaksi = DB::select("SELECT transaksi.*, pengguna.namapengguna, pengguna.username as username_pengguna, pelanggan.namapelanggan, meja.kodemeja, warung.namawarung, warung.kodewarung, promosi.namapromosi, pengguna.kodepengguna
-        FROM transaksi
-        LEFT JOIN pengguna ON pengguna.id = transaksi.idpengguna
-        LEFT JOIN pelanggan ON pelanggan.id = transaksi.idpelanggan
-        LEFT JOIN meja ON meja.id = transaksi.idmeja
-        LEFT JOIN warung ON warung.id = meja.idwarung
-        LEFT JOIN promosi ON promosi.id = transaksi.idpromosi
-        ORDER BY transaksi.id DESC $whereStatusRole
+        ORDER BY transaksi.id DESC 
         ");
 
         return response()->json(["data" => $transaksi]);
