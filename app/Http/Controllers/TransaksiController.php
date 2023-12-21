@@ -23,14 +23,18 @@ class TransaksiController extends Controller
 
     public function list(Request $request){
         // filter by role, if role = 1 (pemilik) then show all status transaksi,
-        // if role = 2 (petugas kasir) then show all
-        // if role = 3 (petugas pengantar pesanan) then show all
-        // if role = 4 (petugas dapur) then show only baru, diproses
 
         $role = auth()->user()->role;
         $whereStatusRole = "";
         if($role == 4){
+            // if role = 4 (petugas dapur) then show only baru, diproses
             $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses')";
+        } else if ($role == 3){
+            // if role = 3 (petugas pengantar pesanan) then show all
+            $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses', 'disajikan')";
+            // if role = 2 (petugas kasir) then show all
+        } else if ($role == 2){
+            $whereStatusRole = " AND transaksi.status IN ('baru', 'diproses', 'disajikan', 'selesai')";
         }
         $shift = null;
         if($request->has("shift")){
@@ -65,13 +69,13 @@ class TransaksiController extends Controller
 
         $role = auth()->user()->role;
         $whereStatusRole = "";
-        if($role == 2){
-            $whereStatusRole = " AND transaksi.status IN ('selesai')";
-        }else if($role == 3){
-            $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
-        }else if($role == 4){
-            $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
-        }
+        // if($role == 2){
+        //     $whereStatusRole = " AND transaksi.status IN ('selesai')";
+        // }else if($role == 3){
+        //     $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
+        // }else if($role == 4){
+        //     $whereStatusRole = " AND transaksi.status IN ('disajikan', 'selesai')";
+        // }
         $shift = null;
         if($request->has("shift")){
             $shift = $request->shift;
